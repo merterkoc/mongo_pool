@@ -49,15 +49,10 @@ start a MongoDB instance using Docker:
 docker run -d -p 27017:27017 --name mongo mongo
 ```
 
-or you can install MongoDB on your machine.
-
 ## Get package for using in your project
 
 [![pub package](https://img.shields.io/pub/v/mongo_pool.svg)](https://pub.dev/packages/mongo_pool)  
 [Show in pub.dev](https://pub.dev/packages/mongo_pool)
-
-
-
 
 ## Additional information
 
