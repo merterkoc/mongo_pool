@@ -1,6 +1,7 @@
 name: mongo_pool
 description: A MongoDB connection pool for Dart.
 version: 1.0.0
+homepage: https://github.com/merterkoc/mongo_pool
 
 environment:
   sdk: '>=2.18.6 <3.0.0'
