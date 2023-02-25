@@ -8,6 +8,7 @@ the [mongo_dart](https://pub.dartlang.org/packages/mongo_dart) package.
 ## Features
 
 * Connection pool size configuration
+* Automatic connection pool expansion
 
 ## Getting started
 
@@ -40,7 +41,7 @@ Future<void> main() async {
 
 ```
 
-### Testing
+## Testing
 
 To run the tests, you need to have a MongoDB instance running on your machine. You can use the following command to
 start a MongoDB instance using Docker:

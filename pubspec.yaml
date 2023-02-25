@@ -2,7 +2,7 @@ name: mongo_pool
 description: A MongoDB connection pool for Dart. Using this package, your application will open as many database connections as you specify as soon as it runs. You can
   open, close and change the number of these links at any time.
 
-version: 1.0.1
+version: 1.0.2
 homepage: https://github.com/merterkoc/mongo_pool
 
 environment:
