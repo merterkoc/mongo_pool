@@ -28,6 +28,7 @@ class MongoDbPool {
         assert(uriString.isNotEmpty, 'uriString must not be empty') {
     for (int i = 0; i < poolSize; i++) {
       _available.add(Db(uriString));
+      _available.last.open();
     }
   }
 
@@ -37,10 +38,11 @@ class MongoDbPool {
   /// Returns the number of connections in use.
   get inUse => _inUse;
 
-  /// Throws an [Exception] if no connection is available.
+  /// Acquires a connection from the pool.
   FutureOr<Db> acquire() async {
     if (_available.isEmpty) {
-      throw Exception('No connection available');
+      _available.add(Db(uriString));
+      await _available.last.open();
     }
     final conn = _available.removeLast();
     _inUse.add(conn);
