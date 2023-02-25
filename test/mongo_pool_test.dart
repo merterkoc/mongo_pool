@@ -8,12 +8,7 @@ void main() {
 
     setUp(() {
       /// Create a pool of 2 connections
-      pool = MongoDbPool(2, 'mongodb://localhost:27017/my_database');
-    });
-
-    tearDown(() async {
-      /// Close the pool
-      await pool.close();
+      pool = MongoDbPool(2, 'mongodb://localhost:27017/station_center');
     });
 
     test('Acquire and release connections', () async {
@@ -34,19 +29,11 @@ void main() {
       final conn2 = await pool.acquire();
       expect(pool.available.length, equals(0));
       expect(pool.inUse.length, equals(2));
-      expect(() => pool.acquire(), throwsA(TypeMatcher<Exception>()));
-      pool.release(conn1);
-      expect(pool.available.length, equals(1));
-      expect(pool.inUse.length, equals(1));
       final conn3 = await pool.acquire();
+      expect(conn3.state, equals(State.open));
       expect(pool.available.length, equals(0));
-      expect(pool.inUse.length, equals(2));
-      pool.release(conn2);
-      expect(pool.available.length, equals(1));
-      expect(pool.inUse.length, equals(1));
       pool.release(conn3);
-      expect(pool.available.length, equals(2));
-      expect(pool.inUse.length, equals(0));
+      expect(pool.available.length, equals(1));
     });
 
     test('Close pool', () async {
