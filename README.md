@@ -25,13 +25,16 @@ A simple usage example:
 import 'package:mongo_pool/mongo_pool.dart';
 
 Future<void> main() async {
+  /// Create a pool of 5 connections
   final pool = MongoDbPool(5, 'mongodb://localhost:27017/my_database');
+  /// Open the pool
+  await pool.open();
+  /// Get a connection from pool
   final conn = await pool.acquire();
-
+  
   // Database operations
   final collection = conn.collection('my_collection');
   final result = await collection.find().toList();
-
   // Connection release for other operations
   pool.release(conn);
 
@@ -49,6 +52,10 @@ start a MongoDB instance using Docker:
 ```bash
 docker run -d -p 27017:27017 --name mongo mongo
 ```
+
+## Problems Solved
+
+- [x] Fixed the issue where calls made without waiting for connections to open would get an error when creating a pool. Please see example codes
 
 ## Get package for using in your project
 

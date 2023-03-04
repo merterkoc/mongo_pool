@@ -25,10 +25,14 @@ class MongoDbPool {
   /// Throws an [Exception] if [uriString] is not a valid connection string.
   MongoDbPool(this.poolSize, this.uriString)
       : assert(poolSize > 0, 'poolSize must be greater than 0'),
-        assert(uriString.isNotEmpty, 'uriString must not be empty') {
-    for (int i = 0; i < poolSize; i++) {
-      _available.add(Db(uriString));
-      _available.last.open();
+        assert(uriString.isNotEmpty, 'uriString must not be empty');
+
+  /// Opens all connections in the pool.
+  Future<void> open() async {
+    for (var i = 0; i < poolSize; i++) {
+      final conn = Db(uriString);
+      await conn.open();
+      _available.add(conn);
     }
   }
 
