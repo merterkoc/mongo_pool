@@ -31,7 +31,11 @@ class MongoDbPool {
   Future<void> open() async {
     for (var i = 0; i < poolSize; i++) {
       final conn = Db(uriString);
-      await conn.open();
+      try {
+        await conn.open();
+      } on Exception catch (e) {
+        throw Exception('Error opening connection: $e');
+      }
       _available.add(conn);
     }
   }
@@ -43,7 +47,7 @@ class MongoDbPool {
   get inUse => _inUse;
 
   /// Acquires a connection from the pool.
-  FutureOr<Db> acquire() async {
+  Future<Db> acquire() async {
     if (_available.isEmpty) {
       _available.add(Db(uriString));
       await _available.last.open();
@@ -62,7 +66,7 @@ class MongoDbPool {
   }
 
   /// Closes all connections in the pool.
-  FutureOr<void> close() async {
+  Future<void> close() async {
     await Future.wait(_inUse.map((c) => c.close()));
     await Future.wait(_available.map((c) => c.close()));
     _inUse.clear();
