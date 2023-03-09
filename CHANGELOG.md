@@ -15,7 +15,8 @@
 
     * Readme update
     * Example code update
-    * Fixed the issue where calls made without waiting for connections to open would get an error when creating a pool
+    * Fixed the issue where calls made without waiting for connections to open would get an error when 
+    creating a pool
 
 ## 1.0.4
 
