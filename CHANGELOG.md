@@ -23,3 +23,7 @@
     * Example code update
     * Test code update
     * Adding MongoDbPoolService class. The pool is now accessible from anywhere in the project
+
+## 1.0.5
+    
+    * Export file update for MongoDbPoolService class
