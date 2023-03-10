@@ -56,6 +56,25 @@ Future<void> openDbPool(MongoDbPoolService service) async {
     print(e.toString());
   }
 }
+
+class OtherClass {
+  OtherClass();
+
+  Future<void> openDbPool() async {
+    /// Get the instance of the pool
+    /// Once you define MongoDbPoolService you can call it with getInstance() method
+    final poolService = MongoDbPoolService.getInstance();
+    final conn = await poolService.acquire();
+    // Database operations
+    final collection = conn.collection('my_collection');
+    final result = await collection.find().toList();
+    // Connection release for other operations
+    poolService.release(conn);
+    // Pool close
+    await poolService.close();
+  }
+}
+
 ```
 
 ## Testing
