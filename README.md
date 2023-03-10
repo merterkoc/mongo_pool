@@ -18,7 +18,13 @@ open, close and change the number of these links at any time.
 
 ## Usage
 
-With mongodb package, you can use the `MongoDbPool` class to create a pool of connections.
+With mongodb package, you can use the `MongoDbPoolService` class to create a pool of connections.
+
+First, you need to create a `MongoDbPoolService` instance. You can do this by passing the number of connections you want
+Next, you need to open the pool. You can do this by calling the `open()` method. If you want to close the pool, you can
+call the `close()` method.
+`MongoDbPoolService` class has a `getInstance()` method. You can use this method to get the instance of the pool. 
+You can use this instance to access the pool from anywhere in the project.
 
 A simple usage example:
 
