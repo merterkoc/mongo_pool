@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 void main() {
   /// Test the MongoDbPool class
   group('MongoDbPool tests', () {
-
+  final uriString = 'mongodb://localhost:27017/test';
     setUp(() {
       /// Create a pool of 2 connections
     });
@@ -13,7 +13,7 @@ void main() {
     test('Open pool', () async {
       final mongoDb = await MongoDbPoolService(
               poolSize: 2,
-              mongoDbUri: 'mongodb://localhost:27017/station_center')
+              mongoDbUri: uriString)
           .open();
       final conn1 = await mongoDb.acquire();
       final conn2 = await mongoDb.acquire();
@@ -28,7 +28,7 @@ void main() {
       expect(mongoDb2, isNotNull);
       expect(mongoDb2.poolSize, equals(2));
       expect(mongoDb2.mongoDbUri,
-          equals('mongodb://localhost:27017/station_center'));
+          equals(uriString));
       expect(mongoDb2.mongoDbUri, equals(mongoDb.uriString));
       expect(mongoDb2.pool.available.length, equals(mongoDb.available.length));
       expect(mongoDb2.pool.inUse.length, equals(mongoDb.inUse.length));
