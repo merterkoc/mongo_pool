@@ -30,7 +30,7 @@ class MongoDbPool {
   /// Opens all connections in the pool.
   Future<void> open() async {
     for (var i = 0; i < poolSize; i++) {
-      final conn = Db(uriString);
+      final conn = await Db.create(uriString);
       try {
         await conn.open();
       } on Exception catch (e) {
