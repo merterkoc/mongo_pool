@@ -94,9 +94,8 @@ docker run -d -p 27017:27017 --name mongo mongo
 
 ## Problems Solved
 
-- [x] Fixed the issue where calls made without waiting for connections to open would get an error when creating a pool. Please see example codes
-- [x] Throw error when there is unable to connect to the database
 - [x] Mongodb srv connection problem solved
+- [x] Fixed a bug that prevented a new connection from being created when no connection remained
 ## Get package for using in your project
 
 [![pub package](https://img.shields.io/pub/v/mongo_pool.svg)](https://pub.dev/packages/mongo_pool)  

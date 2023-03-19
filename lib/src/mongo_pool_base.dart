@@ -49,7 +49,7 @@ class MongoDbPool {
   /// Acquires a connection from the pool.
   Future<Db> acquire() async {
     if (_available.isEmpty) {
-      _available.add(Db(uriString));
+      _available.add(await Db.create(uriString));
       await _available.last.open();
     }
     final conn = _available.removeLast();

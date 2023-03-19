@@ -34,3 +34,8 @@
     * Example code update
     * Test code update
     * Mongodb srv connection problem solved
+
+## 1.1.1
+    * Readme update
+    * Test code update
+    * Fixed a bug that prevented a new connection from being created when no connection remained
