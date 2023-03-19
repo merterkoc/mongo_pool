@@ -28,3 +28,9 @@
 ## 1.0.5
     
     * Export file update for MongoDbPoolService class
+
+## 1.1.0
+    * Readme update
+    * Example code update
+    * Test code update
+    * Mongodb srv connection problem solved
