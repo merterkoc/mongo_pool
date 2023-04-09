@@ -12,8 +12,6 @@ void main() {
     test('Open pool', () async {
       final mongoDb =
           await MongoDbPoolService(poolSize: 1, mongoDbUri: uriString).open();
-      final conn1 = await mongoDb.acquire();
-      final conn2 = await mongoDb.acquire();
       expect(mongoDb.available.length, equals(0));
       expect(mongoDb.inUse.length, equals(2));
       await mongoDb.close();
