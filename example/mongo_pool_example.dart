@@ -8,7 +8,7 @@ Future<void> main() async {
   );
 
   /// Open the pool
-  openDbPool(poolService);
+  await openDbPool(poolService);
 
   /// Get a connection from pool
   final conn = await poolService.acquire();

@@ -26,16 +26,23 @@
     * Adding MongoDbPoolService class. The pool is now accessible from anywhere in the project
 
 ## 1.0.5
-    
+
     * Export file update for MongoDbPoolService class
 
 ## 1.1.0
+
     * Readme update
     * Example code update
     * Test code update
     * Mongodb srv connection problem solved
 
 ## 1.1.1
+
     * Readme update
     * Test code update
     * Fixed a bug that prevented a new connection from being created when no connection remained
+
+## 1.1.2
+
+    * Readme update
+    * Mongo dart package version update
