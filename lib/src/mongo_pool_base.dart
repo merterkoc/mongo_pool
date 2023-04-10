@@ -61,7 +61,8 @@ class MongoDbPool {
   void release(Db conn) {
     if (_inUse.contains(conn)) {
       _inUse.remove(conn);
-      _available.add(conn);
+      conn.close();
+      openNewConnection();
     }
   }
 
@@ -71,5 +72,13 @@ class MongoDbPool {
     await Future.wait(_available.map((c) => c.close()));
     _inUse.clear();
     _available.clear();
+  }
+
+  void openNewConnection() {
+    Db.create(uriString).then((conn) {
+      conn.open().then((_) {
+        _available.add(conn);
+      });
+    });
   }
 }
