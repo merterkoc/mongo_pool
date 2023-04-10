@@ -46,3 +46,8 @@
 
     * Readme update
     * Mongo dart package version update
+
+## 1.2.0
+
+    * Readme update
+    * Opened connection closes after one use

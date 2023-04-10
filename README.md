@@ -96,6 +96,7 @@ docker run -d -p 27017:27017 --name mongo mongo
 
 - [x] Mongodb srv connection problem solved
 - [x] Fixed a bug that prevented a new connection from being created when no connection remained
+- [x] Unable to connect to MongoDB using SSL/TLS fixed
 ## Get package for using in your project
 
 [![pub package](https://img.shields.io/pub/v/mongo_pool.svg)](https://pub.dev/packages/mongo_pool)  
