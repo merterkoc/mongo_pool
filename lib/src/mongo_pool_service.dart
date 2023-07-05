@@ -4,7 +4,7 @@ import 'package:mongo_pool/src/mongo_pool_base.dart';
 /// This class is a singleton that provides a pool of connections to the database
 class MongoDbPoolService {
   /// This [poolSize] is the number of connections that will be created
-  /// Pool Size will increase as requests increase
+  /// Pool Size will increase as requests increase 
   final int poolSize;
 
   /// Example: 'mongodb://localhost:27017/my_database'
