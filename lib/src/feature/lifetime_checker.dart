@@ -1,13 +1,14 @@
 import 'dart:async';
 
-import 'package:mongo_pool/mongo_pool.dart';
 import 'package:mongo_pool/src/feature/connection_feature_model.dart';
+import 'package:mongo_pool/src/mongo_pool_base.dart';
 
 class LifetimeChecker {
   final List<ConnectionInfo> _connections;
   final int _maxLifetimeMilliseconds;
+  final MongoDbPool _mongoDbPool;
 
-  LifetimeChecker(this._connections, this._maxLifetimeMilliseconds);
+  LifetimeChecker(this._connections, this._maxLifetimeMilliseconds, this._mongoDbPool);
 
   void startChecking() {
     print('Starting lifetime checker...');
@@ -29,15 +30,16 @@ class LifetimeChecker {
       }
 
       for (var connInfo in expiredConnections) {
-        await _closeConnection(connInfo.connection);
+        await _closeConnection(connInfo);
         // You might want to add a new connection here, but it's not necessary as new connections are opened when needed.
       }
     });
   }
 
-  Future<void> _closeConnection(Db conn) async {
+  Future<void> _closeConnection(ConnectionInfo connectionInfo) async {
     try {
-      await conn.close();
+
+      _mongoDbPool.closeConnection(connectionInfo);
     } on Exception catch (e) {
       throw Exception('Error closing connection: $e');
     }

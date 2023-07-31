@@ -7,7 +7,7 @@ import 'package:mongo_pool/src/feature/lifetime_checker.dart';
 
 class MongoDbPool {
   /// Mongo pool configuration.
-  final MongoPoolConfiguration _config;
+  late final MongoPoolConfiguration _config;
 
   /// The list of available connections.
   final List<ConnectionInfo> _available = [];
@@ -30,7 +30,7 @@ class MongoDbPool {
       : assert(_config.poolSize > 0, 'poolSize must be greater than 0'),
         assert(_config.uriString.isNotEmpty, 'uriString must not be empty') {
     _lifetimeChecker =
-        LifetimeChecker(_available, _config.maxLifetimeMilliseconds);
+        LifetimeChecker(_available, _config.maxLifetimeMilliseconds, this);
 
     _startLifetimeChecker();
   }
@@ -55,21 +55,21 @@ class MongoDbPool {
   get inUse => _inUse;
 
   /// Acquires a connection from the pool.
-  Future<Db> acquire() async {
+  Future<ConnectionInfo> acquire() async {
     if (_available.isEmpty) {
       _available.add(ConnectionInfo(await Db.create(_config.uriString)));
       await _available.last.connection.open();
     }
     final conn = _available.removeLast();
     _inUse.add(conn);
-    return conn.connection;
+    return conn;
   }
 
   /// Releases a connection back to the pool.
-  void release(Db conn) {
-    if (_inUse.contains(conn)) {
-      _inUse.remove(conn);
-      conn.close();
+  void release(ConnectionInfo connectionInfo) {
+    if (_inUse.contains(connectionInfo)) {
+      _inUse.remove(connectionInfo);
+      connectionInfo.connection.close();
       openNewConnection();
     }
   }
@@ -82,6 +82,13 @@ class MongoDbPool {
     _available.clear();
   }
 
+  /// Closes a connection.
+  Future<void> closeConnection(ConnectionInfo connectionInformation) async {
+    await connectionInformation.connection.close();
+    _available.remove(connectionInformation);
+    _inUse.remove(connectionInformation);
+  }
+
   void openNewConnection() {
     Db.create(_config.uriString).then((conn) {
       conn.open().then((_) {
@@ -90,5 +97,5 @@ class MongoDbPool {
     });
   }
 
-  void _startLifetimeChecker()=> _lifetimeChecker.startChecking();
+  void _startLifetimeChecker() => _lifetimeChecker.startChecking();
 }
