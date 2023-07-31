@@ -1,19 +1,22 @@
 import 'dart:async';
 
 import 'package:mongo_pool/mongo_pool.dart';
+import 'package:mongo_pool/src/configuration/configuration_model.dart';
+import 'package:mongo_pool/src/feature/connection_feature_model.dart';
+import 'package:mongo_pool/src/feature/lifetime_checker.dart';
 
 class MongoDbPool {
-  /// The number of connections in the pool.
-  final int poolSize;
-
-  /// The connection string to use.
-  final String uriString;
+  /// Mongo pool configuration.
+  final MongoPoolConfiguration _config;
 
   /// The list of available connections.
-  final List<Db> _available = [];
+  final List<ConnectionInfo> _available = [];
 
   /// The list of connections in use.
-  final List<Db> _inUse = [];
+  final List<ConnectionInfo> _inUse = [];
+
+  /// The lifetime checker.
+  late LifetimeChecker _lifetimeChecker;
 
   /// Creates a new MongoDbPool instance.
   /// Creates [poolSize] number of connections and adds them to the available list.
@@ -23,20 +26,25 @@ class MongoDbPool {
   /// Asserts that [uriString] is not empty.
   /// Throws an [Exception] if [uriString] is empty or null.
   /// Throws an [Exception] if [uriString] is not a valid connection string.
-  MongoDbPool(this.poolSize, this.uriString)
-      : assert(poolSize > 0, 'poolSize must be greater than 0'),
-        assert(uriString.isNotEmpty, 'uriString must not be empty');
+  MongoDbPool(this._config)
+      : assert(_config.poolSize > 0, 'poolSize must be greater than 0'),
+        assert(_config.uriString.isNotEmpty, 'uriString must not be empty') {
+    _lifetimeChecker =
+        LifetimeChecker(_available, _config.maxLifetimeMilliseconds);
+
+    _startLifetimeChecker();
+  }
 
   /// Opens all connections in the pool.
   Future<void> open() async {
-    for (var i = 0; i < poolSize; i++) {
-      final conn = await Db.create(uriString);
+    for (var i = 0; i < _config.poolSize; i++) {
+      final conn = await Db.create(_config.uriString);
       try {
         await conn.open();
       } on Exception catch (e) {
         throw Exception('Error opening connection: $e');
       }
-      _available.add(conn);
+      _available.add(ConnectionInfo(conn));
     }
   }
 
@@ -49,12 +57,12 @@ class MongoDbPool {
   /// Acquires a connection from the pool.
   Future<Db> acquire() async {
     if (_available.isEmpty) {
-      _available.add(await Db.create(uriString));
-      await _available.last.open();
+      _available.add(ConnectionInfo(await Db.create(_config.uriString)));
+      await _available.last.connection.open();
     }
     final conn = _available.removeLast();
     _inUse.add(conn);
-    return conn;
+    return conn.connection;
   }
 
   /// Releases a connection back to the pool.
@@ -68,17 +76,19 @@ class MongoDbPool {
 
   /// Closes all connections in the pool.
   Future<void> close() async {
-    await Future.wait(_inUse.map((c) => c.close()));
-    await Future.wait(_available.map((c) => c.close()));
+    await Future.wait(_inUse.map((c) => c.connection.close()));
+    await Future.wait(_available.map((c) => c.connection.close()));
     _inUse.clear();
     _available.clear();
   }
 
   void openNewConnection() {
-    Db.create(uriString).then((conn) {
+    Db.create(_config.uriString).then((conn) {
       conn.open().then((_) {
-        _available.add(conn);
+        _available.add(ConnectionInfo(conn));
       });
     });
   }
+
+  void _startLifetimeChecker()=> _lifetimeChecker.startChecking();
 }
