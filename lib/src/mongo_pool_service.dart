@@ -1,6 +1,6 @@
-import 'package:mongo_dart/mongo_dart.dart';
 import 'package:mongo_pool/src/configuration/configuration_model.dart';
-import 'package:mongo_pool/src/exeption/exeption.dart';
+import 'package:mongo_pool/src/exception/exception.dart';
+import 'package:mongo_pool/src/feature/connection_feature_model.dart';
 import 'package:mongo_pool/src/mongo_pool_base.dart';
 
 /// This class is a singleton that provides a pool of connections to the database
@@ -55,15 +55,15 @@ class MongoDbPoolService {
     return _pool;
   }
 
-  Future<Db> acquire() async {
+  Future<ConnectionInfo> acquire() async {
     /// This method gets a connection from the pool
     return _pool.acquire();
   }
 
   /// This method releases a connection to the pool
-  Future<void> release(Db conn) async {
+  Future<void> release(ConnectionInfo connectionInfo) async {
     /// This method releases a connection to the pool
-    _pool.release(conn);
+    _pool.release(connectionInfo);
   }
 
   /// This method closes the pool of connections
