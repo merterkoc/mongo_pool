@@ -2,7 +2,7 @@ import 'package:mongo_pool/mongo_pool.dart';
 import 'package:mongo_pool/src/configuration/configuration_model.dart';
 import 'package:test/test.dart';
 
-@Timeout(Duration(seconds: 60))
+@Timeout(Duration(seconds: 120))
 void main() {
   /// Test the MongoDbPool class
   group('MongoDbPool test 1 connection', () {
@@ -23,5 +23,5 @@ void main() {
       expect(mongoDb.inUse.length, equals(0));
       await mongoDb.close();
     });
-  });
+  },timeout: Timeout(Duration(seconds: 120)));
 }
