@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:mongo_pool/mongo_pool.dart';
 import 'package:mongo_pool/src/configuration/configuration_model.dart';
+import 'package:mongo_pool/src/exception/exception.dart';
 import 'package:mongo_pool/src/feature/connection_feature_model.dart';
 import 'package:mongo_pool/src/feature/lifetime_checker.dart';
+import 'package:mongo_pool/src/feature/observer.dart';
 
-class MongoDbPool {
+class MongoDbPool extends Observer {
   /// Mongo pool configuration.
   late final MongoPoolConfiguration _config;
 
@@ -30,7 +32,7 @@ class MongoDbPool {
       : assert(_config.poolSize > 0, 'poolSize must be greater than 0'),
         assert(_config.uriString.isNotEmpty, 'uriString must not be empty') {
     _lifetimeChecker =
-        LifetimeChecker(_available, _config.maxLifetimeMilliseconds, this);
+        LifetimeChecker(_available, _config.maxLifetimeMilliseconds);
 
     _startLifetimeChecker();
   }
@@ -55,21 +57,23 @@ class MongoDbPool {
   get inUse => _inUse;
 
   /// Acquires a connection from the pool.
-  Future<ConnectionInfo> acquire() async {
+  Future<Db> acquire() async {
     if (_available.isEmpty) {
-      _available.add(ConnectionInfo(await Db.create(_config.uriString)));
-      await _available.last.connection.open();
+      await openNewConnection();
     }
     final conn = _available.removeLast();
     _inUse.add(conn);
-    return conn;
+    return conn.connection;
   }
 
   /// Releases a connection back to the pool.
-  void release(ConnectionInfo connectionInfo) {
+  void release(Db connection) {
+    final connectionInfo = _inUse.firstWhere((c) => c.connection == connection,
+        orElse: () => throw ConnectionNotFountMongoPoolException());
     if (_inUse.contains(connectionInfo)) {
       _inUse.remove(connectionInfo);
       connectionInfo.connection.close();
+      //TODO check before release
       openNewConnection();
     }
   }
@@ -89,13 +93,22 @@ class MongoDbPool {
     _inUse.remove(connectionInformation);
   }
 
-  void openNewConnection() {
-    Db.create(_config.uriString).then((conn) {
-      conn.open().then((_) {
-        _available.add(ConnectionInfo(conn));
+  Future<void> openNewConnection() =>
+      Db.create(_config.uriString).then((conn) async {
+        await conn.open().then((_) {
+          _available.add(ConnectionInfo(conn));
+        });
       });
-    });
+
+  void _startLifetimeChecker() {
+    _lifetimeChecker.subscribe(this);
+    _lifetimeChecker.startChecking();
   }
 
-  void _startLifetimeChecker() => _lifetimeChecker.startChecking();
+  @override
+  void expiredConnectionNotifier(ConnectionInfo connectionInfo) {
+    closeConnection(connectionInfo);
+    openNewConnection();
+    //super.expiredConnectionNotifier(connectionInfo);
+  }
 }

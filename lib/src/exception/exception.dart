@@ -6,3 +6,8 @@ class NotInitializedMongoPoolException implements IMongoPoolException {
   @override
   String get message => 'MongoPool is not initialized';
 }
+
+class ConnectionNotFountMongoPoolException implements IMongoPoolException {
+  @override
+  String get message => 'Connection not found';
+}

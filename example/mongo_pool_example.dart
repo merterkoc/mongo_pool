@@ -12,13 +12,13 @@ Future<void> main() async {
   await openDbPool(poolService);
 
   /// Get a connection from pool
-  final connectionInfo = await poolService.acquire();
+  final connection = await poolService.acquire();
 
   // Database operations
-  final collection = connectionInfo.connection.collection('my_collection');
+  final collection = connection.collection('my_collection');
   final result = await collection.find().toList();
   // Connection release for other operations
-  poolService.release(connectionInfo);
+  poolService.release(connection);
 
   // Pool close
   await poolService.close();
@@ -39,12 +39,12 @@ class OtherClass {
   Future<void> openDbPool() async {
     /// Get the instance of the pool
     final poolService = MongoDbPoolService.getInstance();
-    final connectionInfo = await poolService.acquire();
+    final connection = await poolService.acquire();
     // Database operations
-    final collection = connectionInfo.connection.collection('my_collection');
+    final collection = connection.collection('my_collection');
     final result = await collection.find().toList();
     // Connection release for other operations
-    poolService.release(connectionInfo);
+    poolService.release(connection);
     // Pool close
     await poolService.close();
   }
