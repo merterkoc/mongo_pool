@@ -1,5 +1,4 @@
 import 'package:mongo_pool/mongo_pool.dart';
-import 'package:mongo_pool/src/configuration/configuration_model.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -7,7 +6,7 @@ void main() {
 
   group('MongoDbPool test 2 connection', () {
     const uriString =
-        'mongodb+srv://client:5TiGAZaBLYbrU5je@cluster0.ltybqen.mongodb.net/?retryWrites=true&w=majority/station_center';
+        'connectionString';
     setUp(() {
       /// Create a pool of 2 connections
     });
