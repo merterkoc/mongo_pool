@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:mongo_pool/mongo_pool.dart';
-import 'package:mongo_pool/src/configuration/configuration_model.dart';
 import 'package:mongo_pool/src/exception/exception.dart';
 import 'package:mongo_pool/src/feature/connection_feature_model.dart';
 import 'package:mongo_pool/src/feature/lifetime_checker.dart';
@@ -74,14 +73,11 @@ class MongoDbPool extends Observer {
     );
     if (_inUse.contains(connectionInfo)) {
       _inUse.remove(connectionInfo);
-      connectionInfo.connection.close();
-      //TODO check before release
-      openNewConnection();
     }
   }
 
   /// Closes all connections in the pool.
-  Future<void> close() async {
+  Future<void> closeAllConnection() async {
     await Future.wait(_inUse.map((c) => c.connection.close()));
     await Future.wait(_available.map((c) => c.connection.close()));
     _inUse.clear();

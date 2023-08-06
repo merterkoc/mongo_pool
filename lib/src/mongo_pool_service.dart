@@ -1,5 +1,4 @@
 import 'package:mongo_pool/mongo_pool.dart';
-import 'package:mongo_pool/src/configuration/configuration_model.dart';
 import 'package:mongo_pool/src/exception/exception.dart';
 import 'package:mongo_pool/src/mongo_pool_base.dart';
 
@@ -63,5 +62,5 @@ class MongoDbPoolService {
   }
 
   /// This method closes the pool of connections
-  Future<void> close() async => _pool.close();
+  Future<void> close() async => _pool.closeAllConnection();
 }

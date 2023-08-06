@@ -30,7 +30,5 @@ abstract class Observable {
 class Observer {
   Observer();
 
-  void expiredConnectionNotifier(ConnectionInfo connectionInfo) {
-    print('Expired connection: $connectionInfo');
-  }
+  void expiredConnectionNotifier(ConnectionInfo connectionInfo) {}
 }

@@ -1,15 +1,13 @@
 import 'package:mongo_pool/mongo_pool.dart';
-import 'package:mongo_pool/src/configuration/configuration_model.dart';
 import 'package:test/test.dart';
 
-@Timeout(Duration(seconds: 120))
 void main() {
   /// Test the MongoDbPool class
   group(
     'MongoDbPool test 1 connection',
     () {
       const uriString =
-          'mongodb+srv://client:5TiGAZaBLYbrU5je@cluster0.ltybqen.mongodb.net/?retryWrites=true&w=majority/station_center';
+          'connectionString';
       setUp(() {
         /// Create a pool of 1 connections
       });
@@ -25,7 +23,7 @@ void main() {
 
         expect(mongoDb.available.length, equals(1));
         expect(mongoDb.inUse.length, equals(0));
-        await mongoDb.close();
+        await mongoDb.closeAllConnection();
       });
     },
     timeout: const Timeout(Duration(seconds: 120)),
