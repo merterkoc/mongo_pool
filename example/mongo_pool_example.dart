@@ -1,24 +1,31 @@
+import 'dart:async';
+
+import 'package:mongo_dart/mongo_dart.dart';
 import 'package:mongo_pool/src/configuration/configuration_model.dart';
 import 'package:mongo_pool/src/mongo_pool_service.dart';
 
 Future<void> main() async {
   /// Create a pool of 5 connections
-  final poolService = MongoDbPoolService(MongoPoolConfiguration(
+  final MongoDbPoolService poolService = MongoDbPoolService(
+    const MongoPoolConfiguration(
       maxLifetimeMilliseconds: 1000,
       uriString: 'mongodb://localhost:27017/my_database',
-      poolSize: 4));
+      poolSize: 4,
+    ),
+  );
 
   /// Open the pool
   await openDbPool(poolService);
 
   /// Get a connection from pool
-  final connection = await poolService.acquire();
+  final Db connection = await poolService.acquire();
 
   // Database operations
-  final collection = connection.collection('my_collection');
-  final result = await collection.find().toList();
+  final DbCollection collection = connection.collection('my_collection');
+  final List<Map<String, dynamic>> result = await collection.find().toList();
+  result;
   // Connection release for other operations
-  poolService.release(connection);
+  unawaited(poolService.release(connection));
 
   // Pool close
   await poolService.close();
@@ -29,7 +36,7 @@ Future<void> openDbPool(MongoDbPoolService service) async {
     await service.open();
   } on Exception catch (e) {
     /// handle the exception here
-    print(e.toString());
+    print(e);
   }
 }
 
@@ -38,11 +45,12 @@ class OtherClass {
 
   Future<void> openDbPool() async {
     /// Get the instance of the pool
-    final poolService = MongoDbPoolService.getInstance();
-    final connection = await poolService.acquire();
+    final MongoDbPoolService poolService = MongoDbPoolService.getInstance();
+    final Db connection = await poolService.acquire();
     // Database operations
-    final collection = connection.collection('my_collection');
-    final result = await collection.find().toList();
+    final DbCollection collection = connection.collection('my_collection');
+    final List<Map<String, dynamic>> result = await collection.find().toList();
+    result;
     // Connection release for other operations
     poolService.release(connection);
     // Pool close

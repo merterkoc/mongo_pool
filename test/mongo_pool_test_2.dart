@@ -6,7 +6,7 @@ void main() {
   /// Test the MongoDbPool class
 
   group('MongoDbPool test 2 connection', () {
-    final uriString =
+    const uriString =
         'mongodb+srv://client:5TiGAZaBLYbrU5je@cluster0.ltybqen.mongodb.net/?retryWrites=true&w=majority/station_center';
     setUp(() {
       /// Create a pool of 2 connections
@@ -14,14 +14,16 @@ void main() {
 
     /// Test the MongoDbPoolService class
     test('Open pool', () async {
-      final mongoDb = await MongoDbPoolService(MongoPoolConfiguration(
-              poolSize: 2,
-              uriString: uriString,
-              maxLifetimeMilliseconds: 900000))
-          .open();
+      final mongoDb = await MongoDbPoolService(
+        const MongoPoolConfiguration(
+          poolSize: 2,
+          uriString: uriString,
+          maxLifetimeMilliseconds: 900000,
+        ),
+      ).open();
       final conn1 = await mongoDb.acquire();
       final conn2 = await mongoDb.acquire();
-      await Future.delayed(Duration(seconds: 10));
+      await Future<void>.delayed(const Duration(seconds: 10));
       expect(mongoDb.available.length, equals(0));
       expect(mongoDb.inUse.length, equals(2));
       mongoDb.release(conn1);

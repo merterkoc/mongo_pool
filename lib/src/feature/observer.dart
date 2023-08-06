@@ -1,13 +1,13 @@
 import 'package:mongo_pool/src/feature/connection_feature_model.dart';
 
 abstract class Observable {
-  ///  List of observers
-  List<Observer>? _observers;
-
   ///  Constructor
   Observable([List<Observer>? observers]) {
     _observers = observers ?? [];
   }
+
+  ///  List of observers
+  List<Observer>? _observers;
 
   ///  Register an observer
   void subscribe(Observer observer) {
@@ -22,7 +22,8 @@ abstract class Observable {
   ///  Notify all observers
   void notifyExpire(ConnectionInfo connectionInfo) {
     _observers?.forEach(
-        (observer) => observer.expiredConnectionNotifier(connectionInfo));
+      (observer) => observer.expiredConnectionNotifier(connectionInfo),
+    );
   }
 }
 
