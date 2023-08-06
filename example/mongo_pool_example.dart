@@ -1,8 +1,6 @@
 import 'dart:async';
 
-import 'package:mongo_dart/mongo_dart.dart';
-import 'package:mongo_pool/src/configuration/configuration_model.dart';
-import 'package:mongo_pool/src/mongo_pool_service.dart';
+import 'package:mongo_pool/mongo_pool.dart';
 
 Future<void> main() async {
   /// Create a pool of 5 connections

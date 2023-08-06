@@ -12,7 +12,6 @@ class LifetimeChecker extends Observable {
   void startChecking() {
     log('Max lifetime: $_maxLifetimeMilliseconds milliseconds\nAvailable connections: ${_connections.length}');
     Timer.periodic(const Duration(seconds: 1), (timer) async {
-      print(_connections.map((e) => e.createTime).toList());
 
       final now = DateTime.now();
       final expiredConnections = <ConnectionInfo>[];
