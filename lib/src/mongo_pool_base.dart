@@ -74,6 +74,7 @@ class MongoDbPool extends Observer {
     );
     if (_inUse.contains(connectionInfo)) {
       _inUse.remove(connectionInfo);
+      _available.add(connectionInfo);
     }
   }
 
