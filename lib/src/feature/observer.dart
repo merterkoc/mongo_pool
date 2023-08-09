@@ -1,4 +1,4 @@
-import 'package:mongo_pool/src/feature/connection_feature_model.dart';
+import 'package:mongo_pool/src/feature/connection_info_model.dart';
 
 abstract class Observable {
   ///  Constructor

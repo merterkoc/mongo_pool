@@ -1,8 +1,9 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:mongo_pool/mongo_pool.dart';
 import 'package:mongo_pool/src/exception/exception.dart';
-import 'package:mongo_pool/src/feature/connection_feature_model.dart';
+import 'package:mongo_pool/src/feature/connection_info_model.dart';
 import 'package:mongo_pool/src/feature/lifetime_checker.dart';
 import 'package:mongo_pool/src/feature/observer.dart';
 
@@ -99,14 +100,16 @@ class MongoDbPool extends Observer {
       });
 
   void _startLifetimeChecker() {
-    _lifetimeChecker..subscribe(this)
-    ..startChecking();
+    _lifetimeChecker
+      ..subscribe(this)
+      ..startChecking();
   }
 
   @override
   void expiredConnectionNotifier(ConnectionInfo connectionInfo) {
+    log('${connectionInfo.createTime} expired. Connection closing connection');
     closeConnection(connectionInfo);
+    log('Opening new connection');
     openNewConnection();
-    //super.expiredConnectionNotifier(connectionInfo);
   }
 }
