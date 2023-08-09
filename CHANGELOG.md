@@ -1,3 +1,8 @@
+## 1.3.0-dev.2
+
+    * Test code update
+    * Log messages added
+
 ## 1.3.0-dev.1
 
     * Readme update
