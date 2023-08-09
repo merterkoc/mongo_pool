@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:mongo_pool/src/feature/connection_feature_model.dart';
+import 'package:mongo_pool/src/feature/connection_info_model.dart';
 import 'package:mongo_pool/src/feature/observer.dart';
 
 class LifetimeChecker extends Observable {
@@ -12,7 +12,6 @@ class LifetimeChecker extends Observable {
   void startChecking() {
     log('Max lifetime: $_maxLifetimeMilliseconds milliseconds\nAvailable connections: ${_connections.length}');
     Timer.periodic(const Duration(seconds: 1), (timer) async {
-
       final now = DateTime.now();
       final expiredConnections = <ConnectionInfo>[];
 

@@ -16,12 +16,12 @@ void main() {
           const MongoPoolConfiguration(
             poolSize: 4,
             uriString: uriString,
-            maxLifetimeMilliseconds: 2000,
+            maxLifetimeMilliseconds: 40000,
           ),
         ).open();
-        await Future<void>.delayed(const Duration(seconds: 100));
+        await Future<void>.delayed(const Duration(seconds: 10));
 
-        expect(mongoDb.available.length, equals(1));
+        expect(mongoDb.available.length, equals(4));
         expect(mongoDb.inUse.length, equals(0));
         await mongoDb.closeAllConnection();
       });

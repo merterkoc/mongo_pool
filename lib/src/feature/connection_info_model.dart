@@ -1,6 +1,6 @@
 import 'package:mongo_pool/mongo_pool.dart';
 
-class ConnectionInfo {
+  class ConnectionInfo {
   ConnectionInfo(this.connection)
       : createTime = DateTime.now(),
         lastUseTime = DateTime.now();
