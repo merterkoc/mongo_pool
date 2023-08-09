@@ -1,3 +1,7 @@
+## 1.3.0-dev.3
+
+    * Connection release bug fixed
+
 ## 1.3.0-dev.2
 
     * Test code update
