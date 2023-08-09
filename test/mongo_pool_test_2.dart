@@ -5,8 +5,7 @@ void main() {
   /// Test the MongoDbPool class
 
   group('MongoDbPool test 2 connection', () {
-    const uriString =
-        'connectionString';
+    const uriString = 'connectionString';
     setUp(() {
       /// Create a pool of 2 connections
     });
