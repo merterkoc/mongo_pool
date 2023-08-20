@@ -2,14 +2,14 @@ class MongoPoolConfiguration {
   const MongoPoolConfiguration({
     required this.poolSize,
     required this.uriString,
-    required this.maxLifetimeMilliseconds,
+    this.maxLifetimeMilliseconds,
   })  : assert(poolSize > 0, 'poolSize must be greater than 0'),
         assert(uriString != '', 'uriString must not be empty'),
         assert(
-          maxLifetimeMilliseconds > 0,
+          maxLifetimeMilliseconds == null || maxLifetimeMilliseconds > 0,
           'maxLifetimeMilliseconds must be greater than 0',
         );
   final int poolSize;
   final String uriString;
-  final int maxLifetimeMilliseconds;
+  final int? maxLifetimeMilliseconds;
 }

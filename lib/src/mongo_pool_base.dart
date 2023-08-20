@@ -4,7 +4,8 @@ import 'dart:developer';
 import 'package:mongo_pool/mongo_pool.dart';
 import 'package:mongo_pool/src/exception/exception.dart';
 import 'package:mongo_pool/src/feature/connection_info_model.dart';
-import 'package:mongo_pool/src/feature/lifetime_checker.dart';
+import 'package:mongo_pool/src/feature/connection_leak/proxy_leak_task_factory.dart';
+import 'package:mongo_pool/src/feature/lifetime_checker/lifetime_checker.dart';
 import 'package:mongo_pool/src/feature/observer.dart';
 
 class MongoDbPool extends Observer {
@@ -20,7 +21,11 @@ class MongoDbPool extends Observer {
       : assert(_config.poolSize > 0, 'poolSize must be greater than 0'),
         assert(_config.uriString.isNotEmpty, 'uriString must not be empty') {
     _lifetimeChecker =
-        LifetimeChecker(_available, _config.maxLifetimeMilliseconds);
+        LifetimeChecker(_available, _config.maxLifetimeMilliseconds ?? 30000);
+
+    /// if maxLifetimeMilliseconds is null in config, then set it to 0
+    _proxyLeakTaskFactory =
+        ProxyLeakTaskFactory(_config.maxLifetimeMilliseconds ?? 0);
 
     _startLifetimeChecker();
   }
@@ -37,6 +42,8 @@ class MongoDbPool extends Observer {
   /// The lifetime checker.
   late LifetimeChecker _lifetimeChecker;
 
+  late final ProxyLeakTaskFactory _proxyLeakTaskFactory;
+
   /// Opens all connections in the pool.
   Future<void> open() async {
     for (var i = 0; i < _config.poolSize; i++) {
@@ -46,7 +53,15 @@ class MongoDbPool extends Observer {
       } on Exception catch (e) {
         throw Exception('Error opening connection: $e');
       }
-      _available.add(ConnectionInfo(conn));
+      final proxyLeakTask = _proxyLeakTaskFactory.scheduleNewTask(conn);
+      final connectionInfo = ConnectionInfo(
+        conn,
+        lastUseTime: DateTime.now(),
+        proxyLeakTask: proxyLeakTask,
+      );
+      _available.add(
+        connectionInfo,
+      );
     }
   }
 
@@ -59,10 +74,11 @@ class MongoDbPool extends Observer {
   /// Acquires a connection from the pool.
   Future<Db> acquire() async {
     if (_available.isEmpty) {
-      await openNewConnection();
+      await openNewConnection(_proxyLeakTaskFactory);
     }
     final conn = _available.removeLast();
     _inUse.add(conn);
+
     return conn.connection;
   }
 
@@ -72,6 +88,7 @@ class MongoDbPool extends Observer {
       (c) => c.connection == connection,
       orElse: () => throw ConnectionNotFountMongoPoolException(),
     );
+    _proxyLeakTaskFactory.cancelTask(connectionInfo.proxyLeakTask);
     if (_inUse.contains(connectionInfo)) {
       _inUse.remove(connectionInfo);
       _available.add(connectionInfo);
@@ -93,10 +110,18 @@ class MongoDbPool extends Observer {
     _inUse.remove(connectionInformation);
   }
 
-  Future<void> openNewConnection() =>
+  Future<void> openNewConnection(ProxyLeakTaskFactory proxyLeakTaskFactory) =>
       Db.create(_config.uriString).then((conn) async {
+        final proxyLeakTask = proxyLeakTaskFactory.scheduleNewTask(conn);
+        final connectionInfo = ConnectionInfo(
+          conn,
+          lastUseTime: DateTime.now(),
+          proxyLeakTask: proxyLeakTask,
+        );
         await conn.open().then((_) {
-          _available.add(ConnectionInfo(conn));
+          _available.add(
+            connectionInfo,
+          );
         });
       });
 
@@ -111,6 +136,6 @@ class MongoDbPool extends Observer {
     log('${connectionInfo.createTime} expired. Connection closing connection');
     closeConnection(connectionInfo);
     log('Opening new connection');
-    openNewConnection();
+    openNewConnection(_proxyLeakTaskFactory);
   }
 }
