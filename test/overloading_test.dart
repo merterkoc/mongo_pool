@@ -1,22 +1,28 @@
+import 'dart:io';
+
 import 'package:mongo_pool/mongo_pool.dart';
 import 'package:test/scaffolding.dart';
 
 void main() {
   group('Overloading test', () {
-    const uriString = 'connectionString';
     const collectionName = 'collection';
-    setUp(() {
-      /// Create a pool of 2 connections
-    });
+    final mongoDbUri = Platform.environment['MONGODB_URI'] ??
+        'mongodb://localhost:27017/my_database';
+    setUp(
+      () async {
+        final pool = MongoDbPoolService(
+          MongoPoolConfiguration(
+            poolSize: 4,
+            uriString: mongoDbUri,
+            maxLifetimeMilliseconds: 2000,
+          ),
+        );
+        await pool.open();
+      },
+    );
 
     test('overloading test', () async {
-      final mongoDb = await MongoDbPoolService(
-        const MongoPoolConfiguration(
-          poolSize: 4,
-          uriString: uriString,
-          maxLifetimeMilliseconds: 2000,
-        ),
-      ).open();
+       final mongoDb = MongoDbPoolService.getInstance();
       final connection = await mongoDb.acquire();
 
       /// get collection
@@ -51,13 +57,7 @@ void main() {
     });
 
     test('overloading one connection test', () async {
-      final mongoDb = await MongoDbPoolService(
-        const MongoPoolConfiguration(
-          poolSize: 4,
-          uriString: uriString,
-          maxLifetimeMilliseconds: 2000,
-        ),
-      ).open();
+      final mongoDb = MongoDbPoolService.getInstance();
       final connection = await mongoDb.acquire();
 
       /// get collection
