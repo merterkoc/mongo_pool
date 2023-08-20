@@ -1,3 +1,10 @@
+### 1.3.1-dev.1
+
+- Readme update
+- Test code update
+- Log messages added
+- Connection leak detection added
+
 # 1.3.0
 
 - Readme update
@@ -10,16 +17,16 @@
 - MongoDb Pool configuration added
 - Lifetime of connections in the pool can now be set
 
-# 1.3.0- dev.3
+### 1.3.0- dev.3
 
 - Connection release bug fixed
 
-# 1.3.0- dev.2
+### 1.3.0- dev.2
 
 - Test code update
 - Log messages added
 
-# 1.3.0- dev.1
+### 1.3.0- dev.1
 
 - Readme update
 - Example code update
@@ -66,8 +73,8 @@
 
 -  Readme update
 -  Example code update
--  Fixed the issue where calls made without waiting for connections to open would get an error when 
-    creating a pool
+-  Fixed the issue where calls made without waiting for connections to open would get an error when
+   creating a pool
 
 # 1.0.2
 
