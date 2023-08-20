@@ -1,5 +1,10 @@
 # MongoDB Connection Pooling - Mongo Pool
 
+## New features in 1.3.1
+
+* Connection leak detection added
+  <p> "Connection leak" refers to the situation where an application fails to properly release or close resources (typically connections, memory, etc.), causing them to gradually accumulate and exhaust. These resources continue to be used as the application runs, depleting over time. This can lead to performance degradation, increased memory usage, and even system crashes.</p>
+
 ## How to migrate from 1.2.0 to 1.3.0
 
 * To use MongoDb PoolService you need to create a new Mongo Pool Configuration object. You can use
@@ -10,7 +15,17 @@
 
 final MongoDbPoolService poolService = MongoDbPoolService(
   const MongoPoolConfiguration(
-    maxLifetimeMilliseconds: 1000,
+    /// [maxLifetimeMilliseconds] is the maximum lifetime of a connection in the pool.
+    /// If the connection is not used within the specified time, it is closed.
+    /// The default value is 30000 milliseconds (30 seconds)
+    /// This feature cannot be disabled
+    maxLifetimeMilliseconds: 90000,
+
+    /// [leakDetectionThreshold] is the threshold for connection leak detection.
+    /// If the connection is not released within the specified time, it is
+    /// considered as a leak.
+    /// It won't work if no value is set. It is recommended to set a value
+    leakDetectionThreshold: 10000,
     uriString: 'mongodb://localhost:27017/my_database',
     poolSize: 4,
   ),
@@ -50,7 +65,9 @@ the [mongo_dart](https://pub.dartlang.org/packages/mongo_dart) package.
 
 * Connection pool size configuration
 * Automatic connection pool expansion
-* Instance where you can access the connection from the pool [NEW]
+* Instance where you can access the connection from the pool
+* Connection lifetime configuration [NEW]
+* Connection leak detection [NEW]
 
 ## Getting started
 
@@ -81,7 +98,8 @@ Future<void> main() async {
   /// Create a pool of 5 connections
   final MongoDbPoolService poolService = MongoDbPoolService(
     const MongoPoolConfiguration(
-      maxLifetimeMilliseconds: 1000,
+      maxLifetimeMilliseconds: 90000,
+      leakDetectionThreshold: 10000,
       uriString: 'mongodb://localhost:27017/my_database',
       poolSize: 4,
     ),
