@@ -8,6 +8,7 @@ environment:
   sdk: '>=2.18.6 <4.0.0'
 
 dependencies:
+  meta: ^1.9.1
   mongo_dart: ^0.9.1
   very_good_analysis: ^5.0.0+1
 

@@ -1,31 +1,33 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:mongo_pool/src/feature/connection_info_model.dart';
-import 'package:mongo_pool/src/feature/observer.dart';
+import 'package:mongo_pool/src/feature/pool_observer.dart';
+import 'package:mongo_pool/src/model/connection_info_model.dart';
 
-class LifetimeChecker extends Observable {
-  LifetimeChecker(this._connections, this._maxLifetimeMilliseconds) : super();
-  final List<ConnectionInfo> _connections;
+class LifetimeChecker extends PoolObservable {
+  LifetimeChecker(this._allConnections, this._maxLifetimeMilliseconds)
+      : super();
+  final List<ConnectionInfo> _allConnections;
   final int _maxLifetimeMilliseconds;
 
   void startChecking() {
-    log('Max lifetime: $_maxLifetimeMilliseconds milliseconds\nAvailable connections: ${_connections.length}');
+    log('Max lifetime: $_maxLifetimeMilliseconds milliseconds\nAvailable connections: ${_allConnections.length}');
     Timer.periodic(const Duration(seconds: 1), (timer) async {
       final now = DateTime.now();
       final expiredConnections = <ConnectionInfo>[];
 
-      for (final connInfo in _connections) {
+      for (final connInfo in _allConnections) {
         final elapsedMilliseconds =
             now.difference(connInfo.createTime).inMilliseconds;
-        if (elapsedMilliseconds >= _maxLifetimeMilliseconds) {
+        if (elapsedMilliseconds >= _maxLifetimeMilliseconds &&
+                !connInfo.inUse ||
+            connInfo.leakTask.state.isLeaked) {
           expiredConnections.add(connInfo);
         }
       }
 
       for (final connInfo in expiredConnections) {
         await _closeConnection(connInfo);
-        // You might want to add a new connection here, but it's not necessary as new connections are opened when needed.
       }
     });
   }

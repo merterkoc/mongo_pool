@@ -1,8 +1,8 @@
-import 'package:mongo_pool/src/feature/connection_info_model.dart';
+import 'package:mongo_pool/src/model/connection_info_model.dart';
 
-abstract class Observable {
+abstract class PoolObservable {
   ///  Constructor
-  Observable([List<Observer>? observers]) {
+  PoolObservable([List<Observer>? observers]) {
     _observers = observers ?? [];
   }
 

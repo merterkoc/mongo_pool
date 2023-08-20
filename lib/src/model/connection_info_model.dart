@@ -1,11 +1,11 @@
 import 'package:mongo_pool/mongo_pool.dart';
-import 'package:mongo_pool/src/feature/connection_leak/proxy_leak_task.dart';
+import 'package:mongo_pool/src/feature/connection_leak/leak_task.dart';
 
 class ConnectionInfo {
   ConnectionInfo(
     this.connection, {
     required this.lastUseTime,
-    required this.proxyLeakTask,
+    required this.leakTask,
   }) {
     createTime = DateTime.now();
   }
@@ -13,10 +13,16 @@ class ConnectionInfo {
   Db connection;
   late final DateTime createTime;
   DateTime lastUseTime;
-  late final ProxyLeakTask proxyLeakTask;
+  late final LeakTask leakTask;
 
   /// Connection last used time
   DateTime get lastUse => lastUseTime;
+
+  bool get inUse => leakTask.state.isRunning;
+
+  bool get isLeaked => leakTask.state.isLeaked;
+
+  bool get isIdle => leakTask.state.isIdle;
 
   /// Last time the connection was used.
   set lastUse(DateTime time) => lastUseTime = time;
