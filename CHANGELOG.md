@@ -1,4 +1,10 @@
-### 1.3.1-dev.1
+# 1.3.1-dev.2
+
+- Readme update
+- Multiple invocation of open method is prevented (For when it is run time more than once with hot
+  reload new connection is opened problem)
+
+# 1.3.1-dev.1
 
 - Readme update
 - Test code update
@@ -17,16 +23,16 @@
 - MongoDb Pool configuration added
 - Lifetime of connections in the pool can now be set
 
-### 1.3.0- dev.3
+# 1.3.0- dev.3
 
 - Connection release bug fixed
 
-### 1.3.0- dev.2
+# 1.3.0- dev.2
 
 - Test code update
 - Log messages added
 
-### 1.3.0- dev.1
+# 1.3.0- dev.1
 
 - Readme update
 - Example code update
@@ -64,26 +70,26 @@
 
 # 1.0.4
 
--  Readme update
--  Example code update
--  Test code update
--  Adding MongoDbPoolService class. The pool is now accessible from anywhere in the project
+- Readme update
+- Example code update
+- Test code update
+- Adding MongoDbPoolService class. The pool is now accessible from anywhere in the project
 
 # 1.0.3
 
--  Readme update
--  Example code update
--  Fixed the issue where calls made without waiting for connections to open would get an error when
-   creating a pool
+- Readme update
+- Example code update
+- Fixed the issue where calls made without waiting for connections to open would get an error when
+  creating a pool
 
 # 1.0.2
 
--  Readme update
+- Readme update
 
 # 1.0.1
 
--  Connections in the pool now open automatically
--  Throw error when there is no connection to use in the pool expands by opening new connection
+- Connections in the pool now open automatically
+- Throw error when there is no connection to use in the pool expands by opening new connection
 
 # 1.0.0
 
