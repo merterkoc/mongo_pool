@@ -6,7 +6,8 @@ Future<void> main() async {
   /// Create a pool of 5 connections
   final MongoDbPoolService poolService = MongoDbPoolService(
     const MongoPoolConfiguration(
-      maxLifetimeMilliseconds: 1000,
+      maxLifetimeMilliseconds: 90000,
+      leakDetectionThreshold: 10000,
       uriString: 'mongodb://localhost:27017/my_database',
       poolSize: 4,
     ),
