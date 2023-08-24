@@ -11,3 +11,8 @@ class ConnectionNotFountMongoPoolException implements IMongoPoolException {
   @override
   String get message => 'Connection not found';
 }
+
+class PoolAlreadyOpenMongoPoolException implements IMongoPoolException {
+  @override
+  String get message => 'Pool is already open';
+}

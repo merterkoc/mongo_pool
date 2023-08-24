@@ -50,6 +50,9 @@ class MongoDbPoolService {
   Future<MongoDbPoolBase> open() async {
     /// This method opens the pool of connections
     /// If you take error, check the connection string
+    if (_pool.allConnections.isNotEmpty) {
+      throw PoolAlreadyOpenMongoPoolException();
+    }
     try {
       await _pool.open();
     } on Exception catch (e) {
