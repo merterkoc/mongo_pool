@@ -8,7 +8,7 @@ void main() {
     const collectionName = 'collection';
     final mongoDbUri = Platform.environment['MONGODB_URI'] ??
         'mongodb://localhost:27017/my_database';
-    setUp(
+    setUpAll(
       () async {
         final pool = MongoDbPoolService(
           MongoPoolConfiguration(
@@ -22,7 +22,7 @@ void main() {
     );
 
     test('overloading test', () async {
-       final mongoDb = MongoDbPoolService.getInstance();
+      final mongoDb = MongoDbPoolService.getInstance();
       final connection = await mongoDb.acquire();
 
       /// get collection
