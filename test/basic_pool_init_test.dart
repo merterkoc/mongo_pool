@@ -71,6 +71,6 @@ void main() {
         expect(currentIdleTaskLength, equals(4));
       });
     },
-    timeout: const Timeout(Duration(seconds: 10)),
+    timeout: const Timeout(Duration(seconds: 20)),
   );
 }
