@@ -1,3 +1,17 @@
+# # 1.3.1
+
+- Readme update
+- Multiple invocation of open method is prevented (For when it is run time more than once with hot
+  reload new connection is opened problem)
+- Connection leak detection added
+- Connection release bug fixed
+- Test code update
+- Log messages added
+- Example code update
+- MongoDb Pool now needs to be configured with configuration
+- MongoDb Pool configuration added
+- Lifetime of connections in the pool can now be set
+
 # 1.3.1-dev.2
 
 - Readme update
