@@ -1,4 +1,7 @@
-# # 1.3.1
+# 1.3.2
+- Mongo dart package version update
+
+# 1.3.1
 
 - Readme update
 - Multiple invocation of open method is prevented (For when it is run time more than once with hot
