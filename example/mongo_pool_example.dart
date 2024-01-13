@@ -24,7 +24,7 @@ Future<void> main() async {
   final List<Map<String, dynamic>> result = await collection.find().toList();
   result;
   // Connection release for other operations
-  unawaited(poolService.release(connection));
+  poolService.release(connection);
 
   // Pool close
   await poolService.close();
