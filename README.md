@@ -1,11 +1,11 @@
 # MongoDB Connection Pooling - Mongo Pool
 
-## New features in 1.3.1
+## New features in 1.3.3
 
-* Connection leak detection added
-  <p> "Connection leak" refers to the situation where an application fails to properly release or close resources (typically connections, memory, etc.), causing them to gradually accumulate and exhaust. These resources continue to be used as the application runs, depleting over time. This can lead to performance degradation, increased memory usage, and even system crashes.</p>
+* Dynamic Expansion and Maintenance of Connection Pools [NEW]
+  <p> Connection pools can dynamically expand when faced with high demand. Unused connections within a specified period are automatically removed, and the pool size is reduced to the specified minimum when connections are not reused within that timeframe.</p>
 
-## How to migrate from 1.2.0 to 1.3.0
+## Get Started
 
 * To use MongoDb PoolService you need to create a new Mongo Pool Configuration object. You can use
   the following code
@@ -16,10 +16,11 @@
 final MongoDbPoolService poolService = MongoDbPoolService(
   const MongoPoolConfiguration(
     /// [maxLifetimeMilliseconds] is the maximum lifetime of a connection in the pool.
-    /// If the connection is not used within the specified time, it is closed.
-    /// The default value is 30000 milliseconds (30 seconds)
-    /// This feature cannot be disabled
-    maxLifetimeMilliseconds: 90000,
+    /// Connection pools can dynamically expand when faced with high demand. Unused
+    /// connections within a specified period are automatically removed, and the pool
+    /// size is reduced to the specified minimum when connections (poolSize) are not reused within
+    /// that timeframe.
+    maxLifetimeMilliseconds: 180000,
 
     /// [leakDetectionThreshold] is the threshold for connection leak detection.
     /// If the connection is not released within the specified time, it is
@@ -27,7 +28,8 @@ final MongoDbPoolService poolService = MongoDbPoolService(
     /// It won't work if no value is set. It is recommended to set a value
     leakDetectionThreshold: 10000,
     uriString: 'mongodb://localhost:27017/my_database',
-    poolSize: 4,
+    /// [poolSize] is the minimum number of connections in the pool.
+    poolSize: 2,
   ),
 );
 ```
@@ -98,10 +100,10 @@ Future<void> main() async {
   /// Create a pool of 5 connections
   final MongoDbPoolService poolService = MongoDbPoolService(
     const MongoPoolConfiguration(
-      maxLifetimeMilliseconds: 90000,
+      maxLifetimeMilliseconds: 180000,
       leakDetectionThreshold: 10000,
       uriString: 'mongodb://localhost:27017/my_database',
-      poolSize: 4,
+      poolSize: 2,
     ),
   );
 
@@ -116,7 +118,7 @@ Future<void> main() async {
   final List<Map<String, dynamic>> result = await collection.find().toList();
   result;
   // Connection release for other operations
-  unawaited(poolService.release(connection));
+  poolService.release(connection);
 
   // Pool close
   await poolService.close();
