@@ -29,9 +29,9 @@ void main() {
       final conn2 = await mongoDb.acquire();
       expect(mongoDb.availableConnectionLength, equals(2));
       expect(mongoDb.inUseConnectionLength, equals(2));
-      unawaited(mongoDb.release(conn1));
+      mongoDb.release(conn1);
       expect(mongoDb.inUseConnectionLength, equals(1));
-      unawaited(mongoDb.release(conn2));
+      mongoDb.release(conn2);
       await mongoDb.acquire();
       await Future<void>.delayed(const Duration(seconds: 10));
     });

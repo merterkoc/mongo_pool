@@ -24,11 +24,11 @@ void main() {
     /// Test the MongoDbPoolService class
     test('Open pool', () async {
       final mongoDb = MongoDbPoolService.getInstance();
-     try {
-       await mongoDb.open();
-     } on PoolAlreadyOpenMongoPoolException catch (e) {
-       expect(e.message, equals('Pool is already open'));
-     }
+      try {
+        await mongoDb.open();
+      } on PoolAlreadyOpenMongoPoolException catch (e) {
+        expect(e.message, equals('Pool is already open'));
+      }
     });
   });
 }

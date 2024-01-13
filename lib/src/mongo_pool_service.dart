@@ -67,7 +67,7 @@ class MongoDbPoolService {
   }
 
   /// This method releases a connection to the pool
-  Future<void> release(Db connection) async {
+  void release(Db connection) {
     /// This method releases a connection to the pool
     _pool.release(connection);
   }
