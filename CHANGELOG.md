@@ -1,3 +1,6 @@
+# 1.3.3-dev.2
+- Readme update
+
 # 1.3.3-dev.1
 - Mongo dart package version update
 - Readme update
