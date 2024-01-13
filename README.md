@@ -5,59 +5,6 @@
 * Dynamic Expansion and Maintenance of Connection Pools [NEW]
   <p> Connection pools can dynamically expand when faced with high demand. Unused connections within a specified period are automatically removed, and the pool size is reduced to the specified minimum when connections are not reused within that timeframe.</p>
 
-## Get Started
-
-* To use MongoDb PoolService you need to create a new Mongo Pool Configuration object. You can use
-  the following code
-  snippet to create a Mongo Pool Configuration object.
-
-```dart
-
-final MongoDbPoolService poolService = MongoDbPoolService(
-  const MongoPoolConfiguration(
-    /// [maxLifetimeMilliseconds] is the maximum lifetime of a connection in the pool.
-    /// Connection pools can dynamically expand when faced with high demand. Unused
-    /// connections within a specified period are automatically removed, and the pool
-    /// size is reduced to the specified minimum when connections (poolSize) are not reused within
-    /// that timeframe.
-    maxLifetimeMilliseconds: 180000,
-
-    /// [leakDetectionThreshold] is the threshold for connection leak detection.
-    /// If the connection is not released within the specified time, it is
-    /// considered as a leak.
-    /// It won't work if no value is set. It is recommended to set a value
-    leakDetectionThreshold: 10000,
-    uriString: 'mongodb://localhost:27017/my_database',
-    /// [poolSize] is the minimum number of connections in the pool.
-    poolSize: 2,
-  ),
-);
-```
-
-* You can use the following code snippet to open the pool.
-
-```dart
-
-await openDbPool(poolService);
-
-Future<void> openDbPool(MongoDbPoolService service) async {
-  try {
-    await service.open();
-  } on Exception catch (e) {
-    /// handle the exception here
-    print(e);
-  }
-}
-
-```
-
-* You can use the following code snippet to get the instance of the pool.
-
-```dart
-
-final MongoDbPoolService poolService = MongoDbPoolService.getInstance();
-```
-
 ## Introduction
 
 This package is a simple connection pooling for MongoDB. It is based on
@@ -65,11 +12,12 @@ the [mongo_dart](https://pub.dartlang.org/packages/mongo_dart) package.
 
 ## Features
 
+* Dynamic expansion and maintenance of connection pools. [NEW]
 * Connection pool size configuration
 * Automatic connection pool expansion
 * Instance where you can access the connection from the pool
-* Connection lifetime configuration [NEW]
-* Connection leak detection [NEW]
+* Connection lifetime configuration
+* Connection leak detection
 
 ## Getting started
 
@@ -98,11 +46,25 @@ import 'package:mongo_pool/mongo_pool.dart';
 
 Future<void> main() async {
   /// Create a pool of 5 connections
+
   final MongoDbPoolService poolService = MongoDbPoolService(
     const MongoPoolConfiguration(
+
+      /// [maxLifetimeMilliseconds] is the maximum lifetime of a connection in the pool.
+      /// Connection pools can dynamically expand when faced with high demand. Unused
+      /// connections within a specified period are automatically removed, and the pool
+      /// size is reduced to the specified minimum when connections (poolSize) are not reused within
+      /// that timeframe.
       maxLifetimeMilliseconds: 180000,
+
+      /// [leakDetectionThreshold] is the threshold for connection leak detection.
+      /// If the connection is not released within the specified time, it is
+      /// considered as a leak.
+      /// It won't work if no value is set. It is recommended to set a value
       leakDetectionThreshold: 10000,
       uriString: 'mongodb://localhost:27017/my_database',
+
+      /// [poolSize] is the minimum number of connections in the pool.
       poolSize: 2,
     ),
   );
