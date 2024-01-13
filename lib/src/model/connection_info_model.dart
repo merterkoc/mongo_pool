@@ -23,7 +23,4 @@ class ConnectionInfo {
   bool get isLeaked => leakTask.state.isLeaked;
 
   bool get isIdle => leakTask.state.isIdle;
-
-  /// Last time the connection was used.
-  set lastUse(DateTime time) => lastUseTime = time;
 }

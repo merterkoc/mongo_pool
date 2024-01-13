@@ -22,7 +22,8 @@ class MongoDbPoolBase extends Observer {
         assert(_config.uriString.isNotEmpty, 'uriString must not be empty') {
     _lifetimeChecker = LifetimeChecker(
       allConnections,
-      _config.maxLifetimeMilliseconds ?? 30000,
+      _config.maxLifetimeMilliseconds ?? 1800000,
+      _config.poolSize,
     );
 
     /// if maxLifetimeMilliseconds is null in config, then set it to 0
@@ -64,6 +65,7 @@ class MongoDbPoolBase extends Observer {
       _available.add(
         connectionInfo,
       );
+      _lifetimeChecker.updateConnections(allConnections);
     }
   }
 
@@ -87,6 +89,7 @@ class MongoDbPoolBase extends Observer {
     final lastIdleConnection = _idleConnections.last;
     _available.remove(lastIdleConnection);
     _inUse.add(lastIdleConnection);
+    _lifetimeChecker.updateConnections(allConnections);
     lastIdleConnection.leakTask.start();
     return lastIdleConnection.connection;
   }
@@ -98,9 +101,10 @@ class MongoDbPoolBase extends Observer {
       orElse: () => throw ConnectionNotFountMongoPoolException(),
     );
     _proxyLeakTaskFactory.cancelTask(connectionInfo.leakTask);
-    if (_inUse.contains(connectionInfo) && connectionInfo.isIdle) {
+    if (connectionInfo.isIdle) {
       _inUse.remove(connectionInfo);
       _available.add(connectionInfo);
+      connectionInfo.lastUseTime = DateTime.now();
     } else {
       closeConnection(connectionInfo);
     }
@@ -117,8 +121,11 @@ class MongoDbPoolBase extends Observer {
   /// Closes a connection.
   Future<void> closeConnection(ConnectionInfo connectionInformation) async {
     await connectionInformation.connection.close();
+    _proxyLeakTaskFactory.cancelTask(connectionInformation.leakTask);
+    connectionInformation.lastUseTime = DateTime.now();
     _available.remove(connectionInformation);
     _inUse.remove(connectionInformation);
+    _lifetimeChecker.updateConnections(allConnections);
   }
 
   Future<void> openNewConnection(LeakTaskFactory proxyLeakTaskFactory) =>
@@ -147,6 +154,11 @@ class MongoDbPoolBase extends Observer {
     log('${connectionInfo.createTime} expired. Connection closing connection');
     closeConnection(connectionInfo);
     log('Opening new connection');
-    openNewConnection(_proxyLeakTaskFactory);
+    if (allConnections.length < _config.poolSize) {
+      log('Available connections less than minPoolSize. Opening new connection');
+      openNewConnection(_proxyLeakTaskFactory);
+    } else {
+      log('Available connections greater than minPoolSize. Not opening new connection');
+    }
   }
 }

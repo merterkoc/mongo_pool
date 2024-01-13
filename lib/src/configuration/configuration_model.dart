@@ -4,11 +4,17 @@ import 'package:meta/meta.dart';
 class MongoPoolConfiguration {
   /// Mongo pool configuration.
   ///
-  /// [poolSize] is the number of connections in the pool.
+  /// [poolSize] is the minimum number of connections in the pool.
   ///
   /// [uriString] is the connection string to the database.
   ///
   /// [maxLifetimeMilliseconds] is the maximum lifetime of a connection in the pool.
+  /// Connection pools can dynamically expand when faced with high demand. Unused
+  /// connections within a specified period are automatically removed, and the pool
+  /// size is reduced to the specified minimum when connections are not reused within
+  /// that timeframe.
+  ///
+  /// If null, then the default is 1800000 milliseconds (30 minutes).
   ///
   /// [leakDetectionThreshold] is the threshold for connection leak detection.
   const MongoPoolConfiguration({
@@ -25,6 +31,16 @@ class MongoPoolConfiguration {
         assert(
           leakDetectionThreshold == null || leakDetectionThreshold > 0,
           'leakDetectionThreshold must be greater than 0',
+        ),
+        assert(
+          maxLifetimeMilliseconds == null ||
+              leakDetectionThreshold == null ||
+              maxLifetimeMilliseconds > leakDetectionThreshold,
+          'maxLifetimeMilliseconds must be greater than leakDetectionThreshold',
+        ),
+        assert(
+          poolSize > 0,
+          'poolSize must be greater than 0',
         );
 
   /// The number of connections in the pool.

@@ -39,7 +39,7 @@ void main() {
         final connection = await mongoPool.acquire();
         expect(mongoPool.availableConnectionLength, equals(3));
         expect(mongoPool.inUseConnectionLength, equals(1));
-        await mongoPool.release(connection);
+        mongoPool.release(connection);
         expect(mongoPool.availableConnectionLength, equals(4));
         expect(mongoPool.inUseConnectionLength, equals(0));
         await mongoPool.close();
@@ -57,11 +57,11 @@ void main() {
 
         expect(mongoPool.availableConnectionLength, equals(2));
         expect(mongoPool.inUseConnectionLength, equals(2));
-        await mongoPool.release(connection);
+        mongoPool.release(connection);
         expect(mongoPool.availableConnectionLength, equals(3));
         expect(mongoPool.inUseConnectionLength, equals(1));
 
-        await mongoPool.release(connection2);
+        mongoPool.release(connection2);
         expect(mongoPool.availableConnectionLength, equals(4));
         expect(mongoPool.inUseConnectionLength, equals(0));
 
