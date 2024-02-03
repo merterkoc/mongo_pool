@@ -1,15 +1,31 @@
-# 1.3.3-dev.2
-- Readme update
+# 1.4.0
 
-# 1.3.3-dev.1
 - Mongo dart package version update
 - Readme update
 - Example code update
 - Test code update
 - Log messages added
-- Connection pools can dynamically expand when faced with high demand. Unused connections within a specified period are automatically removed, and the pool size is reduced to the specified minimum when connections are not reused within that timeframe.
+- Connection pools can dynamically expand when faced with high demand. Unused connections within a
+  specified period are automatically removed, and the pool size is reduced to the specified minimum
+  when connections are not reused within that timeframe.
+
+## 1.3.3-dev.2
+
+- Readme update
+
+## 1.3.3-dev.1
+
+- Mongo dart package version update
+- Readme update
+- Example code update
+- Test code update
+- Log messages added
+- Connection pools can dynamically expand when faced with high demand. Unused connections within a
+  specified period are automatically removed, and the pool size is reduced to the specified minimum
+  when connections are not reused within that timeframe.
 
 # 1.3.2
+
 - Mongo dart package version update
 
 # 1.3.1
