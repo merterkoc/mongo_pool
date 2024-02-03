@@ -1,6 +1,6 @@
 # MongoDB Connection Pooling - Mongo Pool
 
-## New features in 1.3.3
+## New features in 1.4.0
 
 * Dynamic Expansion and Maintenance of Connection Pools [NEW]
   <p> Connection pools can dynamically expand when faced with high demand. Unused connections within a specified period are automatically removed, and the pool size is reduced to the specified minimum when connections are not reused within that timeframe.</p>
