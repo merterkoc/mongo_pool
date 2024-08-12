@@ -1,3 +1,7 @@
+# 1.4.2
+
+- Mongo dart package version update
+
 # 1.4.1
 
 - *(Breaking changes mongo_dart!)*
