@@ -10,11 +10,17 @@ Future<void> main() async {
       leakDetectionThreshold: 10000,
       uriString: 'mongodb://localhost:27017/my_database',
       poolSize: 4,
+      secure: false,
+      tlsAllowInvalidCertificates: false,
+      tlsCAFile: null,
+      tlsCertificateKeyFile: null,
+      tlsCertificateKeyFilePassword: null,
+      writeConcern: WriteConcern.acknowledged,
     ),
   );
 
-  /// Open the pool
-  await openDbPool(poolService);
+  /// Initialize the pool
+  await initialize(poolService);
 
   /// Get a connection from pool
   final Db connection = await poolService.acquire();
@@ -30,9 +36,9 @@ Future<void> main() async {
   await poolService.close();
 }
 
-Future<void> openDbPool(MongoDbPoolService service) async {
+Future<void> initialize(MongoDbPoolService service) async {
   try {
-    await service.open();
+    await service.initialize();
   } on Exception catch (e) {
     /// handle the exception here
     print(e);

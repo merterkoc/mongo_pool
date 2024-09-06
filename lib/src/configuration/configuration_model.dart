@@ -1,4 +1,5 @@
 import 'package:meta/meta.dart';
+import 'package:mongo_pool/mongo_pool.dart';
 
 @immutable
 class MongoPoolConfiguration {
@@ -22,6 +23,12 @@ class MongoPoolConfiguration {
     required this.uriString,
     this.maxLifetimeMilliseconds,
     this.leakDetectionThreshold,
+    this.writeConcern = WriteConcern.acknowledged,
+    this.secure = false,
+    this.tlsAllowInvalidCertificates = false,
+    this.tlsCAFile,
+    this.tlsCertificateKeyFile,
+    this.tlsCertificateKeyFilePassword,
   })  : assert(poolSize > 0, 'poolSize must be greater than 0'),
         assert(uriString != '', 'uriString must not be empty'),
         assert(
@@ -54,4 +61,22 @@ class MongoPoolConfiguration {
 
   /// The threshold for connection leak detection.
   final int? leakDetectionThreshold;
+
+  /// The write concern to use when opening a connection.
+  final WriteConcern writeConcern;
+
+  /// Whether to use TLS for the connection.
+  final bool secure;
+
+  /// Whether to allow invalid certificates for the connection.
+  final bool tlsAllowInvalidCertificates;
+
+  /// The path to the CA file for the connection.
+  final String? tlsCAFile;
+
+  /// The path to the certificate key file for the connection.
+  final String? tlsCertificateKeyFile;
+
+  /// The password for the certificate key file for the connection.
+  final String? tlsCertificateKeyFilePassword;
 }

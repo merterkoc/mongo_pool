@@ -16,7 +16,7 @@ void main() {
           maxLifetimeMilliseconds: 10000,
         ),
       );
-      await pool.open();
+      await pool.initialize();
     },
   );
 
@@ -25,7 +25,7 @@ void main() {
     test('Open pool', () async {
       final mongoDb = MongoDbPoolService.getInstance();
       try {
-        await mongoDb.open();
+        await mongoDb.initialize();
       } on PoolAlreadyOpenMongoPoolException catch (e) {
         expect(e.message, equals('Pool is already open'));
       }

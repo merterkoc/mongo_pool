@@ -48,11 +48,34 @@ class MongoDbPoolBase extends Observer {
   late final LeakTaskFactory _proxyLeakTaskFactory;
 
   /// Opens all connections in the pool.
-  Future<void> open() async {
+  Future<void> initialize() async {
     for (var i = 0; i < _config.poolSize; i++) {
       final conn = await Db.create(_config.uriString);
       try {
         await conn.open();
+      } on Exception catch (e) {
+        throw Exception('Error opening connection: $e');
+      }
+      final proxyLeakTask = _proxyLeakTaskFactory.createTask(conn);
+      final connectionInfo = ConnectionInfo(
+        conn,
+        lastUseTime: DateTime.now(),
+        leakTask: proxyLeakTask,
+      );
+      _available.add(
+        connectionInfo,
+      );
+      _lifetimeChecker.updateConnections(allConnections);
+    }
+  }
+
+  /// Opens all connections in the pool.
+  @Deprecated('Use initialize() instead')
+  Future<void> open() async {
+    for (var i = 0; i < _config.poolSize; i++) {
+      final conn = await Db.create(_config.uriString);
+      try {
+        await openConnection(conn);
       } on Exception catch (e) {
         throw Exception('Error opening connection: $e');
       }
@@ -136,7 +159,7 @@ class MongoDbPoolBase extends Observer {
           lastUseTime: DateTime.now(),
           leakTask: proxyLeakTask,
         );
-        await conn.open().then((_) {
+        await openConnection(conn).then((_) {
           _available.add(
             connectionInfo,
           );
@@ -147,6 +170,17 @@ class MongoDbPoolBase extends Observer {
     _lifetimeChecker
       ..subscribe(this)
       ..startChecking();
+  }
+
+  Future<void> openConnection(Db conn) async {
+    return conn.open(
+      writeConcern: _config.writeConcern,
+      secure: _config.secure,
+      tlsAllowInvalidCertificates: _config.tlsAllowInvalidCertificates,
+      tlsCAFile: _config.tlsCAFile,
+      tlsCertificateKeyFile: _config.tlsCertificateKeyFile,
+      tlsCertificateKeyFilePassword: _config.tlsCertificateKeyFilePassword,
+    );
   }
 
   @override

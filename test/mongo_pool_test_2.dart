@@ -16,7 +16,7 @@ void main() {
           maxLifetimeMilliseconds: 10000,
         ),
       );
-      await pool.open();
+      await pool.initialize();
     },
   );
 

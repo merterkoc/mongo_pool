@@ -46,7 +46,24 @@ class MongoDbPoolService {
   /// This method returns the number of connections in the pool
   int get inUseConnectionLength => _pool.inUse.length;
 
+  /// This method opens the pool of connections for the first time
+  Future<MongoDbPoolBase> initialize() async {
+    /// This method opens the pool of connections
+    /// If you take error, check the connection string
+    if (_pool.allConnections.isNotEmpty) {
+      throw PoolAlreadyOpenMongoPoolException();
+    }
+    try {
+      await _pool.initialize();
+    } on Exception catch (e) {
+      throw Exception('Error opening pool: $e');
+    }
+    return _pool;
+  }
+
+
   /// This method opens the pool of connections
+  @Deprecated('Use initialize() instead')
   Future<MongoDbPoolBase> open() async {
     /// This method opens the pool of connections
     /// If you take error, check the connection string
@@ -54,7 +71,7 @@ class MongoDbPoolService {
       throw PoolAlreadyOpenMongoPoolException();
     }
     try {
-      await _pool.open();
+      await _pool.initialize();
     } on Exception catch (e) {
       throw Exception('Error opening pool: $e');
     }

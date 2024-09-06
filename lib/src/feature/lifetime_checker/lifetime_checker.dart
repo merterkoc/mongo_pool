@@ -6,8 +6,10 @@ import 'package:mongo_pool/src/model/connection_info_model.dart';
 
 class LifetimeChecker extends PoolObservable {
   LifetimeChecker(
-      this._allConnections, this._maxLifetimeMilliseconds, this._poolSize)
-      : super();
+    this._allConnections,
+    this._maxLifetimeMilliseconds,
+    this._poolSize,
+  ) : super();
 
   List<ConnectionInfo> _allConnections;
   final int _maxLifetimeMilliseconds;
