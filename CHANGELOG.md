@@ -1,3 +1,18 @@
+# 1.4.3
+
+- Readme update
+- Example code update
+- Test code update
+- Deprecated open method replaced with initialize
+- Added new configuration parameters;
+  - writeConcern
+  - secure
+  - tlsAllowInvalidCertificates
+  - tlsCAFile
+  - tlsCertificateKeyFile
+  - tlsCertificateKeyFilePassword
+  - Please see the [link](https://www.mongodb.com/docs/drivers/php/laravel-mongodb/v4.x/fundamentals/connection/connection-options/) for more details
+
 # 1.4.2
 
 - Mongo dart package version update

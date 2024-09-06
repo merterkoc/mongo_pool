@@ -66,11 +66,16 @@ Future<void> main() async {
 
       /// [poolSize] is the minimum number of connections in the pool.
       poolSize: 2,
+      secure: false,
+      tlsAllowInvalidCertificates: false,
+      tlsCAFile: 'path/to/ca/file',
+      tlsCertificateKeyFile: 'path/to/certificate/key/file',
+      tlsCertificateKeyFilePassword: 'password',
     ),
   );
 
   /// Open the pool
-  await openDbPool(poolService);
+  await initialize(poolService);
 
   /// Get a connection from pool
   final Db connection = await poolService.acquire();
@@ -86,9 +91,9 @@ Future<void> main() async {
   await poolService.close();
 }
 
-Future<void> openDbPool(MongoDbPoolService service) async {
+Future<void> initialize(MongoDbPoolService service) async {
   try {
-    await service.open();
+    await service.initialize();
   } on Exception catch (e) {
     /// handle the exception here
     print(e);
@@ -98,7 +103,7 @@ Future<void> openDbPool(MongoDbPoolService service) async {
 class OtherClass {
   OtherClass();
 
-  Future<void> openDbPool() async {
+  Future<void> initialize() async {
     /// Get the instance of the pool
     final MongoDbPoolService poolService = MongoDbPoolService.getInstance();
     final Db connection = await poolService.acquire();
