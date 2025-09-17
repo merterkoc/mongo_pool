@@ -1,3 +1,7 @@
+# 1.4.4
+
+- Mongo dart package and dependencies version update
+ 
 # 1.4.3
 
 - Readme update
