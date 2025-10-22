@@ -1,3 +1,16 @@
+# 1.5.0-dev
+
+- **New Feature**: Automatic connection health checking during acquire()
+- **New Feature**: Auto-reconnection to master on connection failures  
+- **Configuration**: Added `enableHealthCheck` parameter (default: true)
+- **Configuration**: Added `healthCheckTimeoutMs` parameter (default: 5000ms)
+- **Enhancement**: Connection verification using MongoDB ping command
+- **Enhancement**: Automatic unhealthy connection replacement 
+- **Enhancement**: Improved reliability for replica set environments
+- **Enhancement**: Better handling of master failover scenarios
+- **Test**: Added comprehensive health check test suite
+- **Compatibility**: Backward compatible - existing code works without changes
+
 # 1.4.4
 
 - Mongo dart package and dependencies version update
