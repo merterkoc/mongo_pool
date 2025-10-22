@@ -61,7 +61,6 @@ class MongoDbPoolService {
     return _pool;
   }
 
-
   /// This method opens the pool of connections
   @Deprecated('Use initialize() instead')
   Future<MongoDbPoolBase> open() async {
