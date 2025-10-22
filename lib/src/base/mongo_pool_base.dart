@@ -110,6 +110,14 @@ class MongoDbPoolBase extends Observer {
     }
 
     final lastIdleConnection = _idleConnections.last;
+
+    // Perform health check if enabled
+    if (!await _isConnectionHealthy(lastIdleConnection.connection)) {
+      await _handleUnhealthyConnection(lastIdleConnection);
+      // Recursively call acquire to get a healthy connection
+      return acquire();
+    }
+
     _available.remove(lastIdleConnection);
     _inUse.add(lastIdleConnection);
     _lifetimeChecker.updateConnections(allConnections);
@@ -181,6 +189,37 @@ class MongoDbPoolBase extends Observer {
       tlsCertificateKeyFile: _config.tlsCertificateKeyFile,
       tlsCertificateKeyFilePassword: _config.tlsCertificateKeyFilePassword,
     );
+  }
+
+  /// Checks if a connection is healthy by performing a ping command.
+  Future<bool> _isConnectionHealthy(Db connection) async {
+    if (!_config.enableHealthCheck) {
+      return true;
+    }
+
+    try {
+      await connection
+          .pingCommand()
+          .timeout(Duration(milliseconds: _config.healthCheckTimeoutMs));
+      return true;
+    } on Exception catch (e) {
+      log('Connection health check failed: $e');
+      return false;
+    }
+  }
+
+  /// Handles an unhealthy connection by closing it and opening a new one.
+  Future<void> _handleUnhealthyConnection(ConnectionInfo connectionInfo) async {
+    log('Handling unhealthy connection, closing and creating new one');
+    await closeConnection(connectionInfo);
+
+    try {
+      await openNewConnection(_proxyLeakTaskFactory);
+      log('Successfully created new connection to replace unhealthy one');
+    } on Exception catch (e) {
+      log('Failed to create replacement connection: $e');
+      // Don't throw here, let the pool continue with remaining connections
+    }
   }
 
   @override
