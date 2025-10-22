@@ -18,11 +18,17 @@ class MongoPoolConfiguration {
   /// If null, then the default is 1800000 milliseconds (30 minutes).
   ///
   /// [leakDetectionThreshold] is the threshold for connection leak detection.
+  ///
+  /// [enableHealthCheck] enables connection health checking during acquire().
+  ///
+  /// [healthCheckTimeoutMs] is the timeout for health check operations in milliseconds.
   const MongoPoolConfiguration({
     required this.poolSize,
     required this.uriString,
     this.maxLifetimeMilliseconds,
     this.leakDetectionThreshold,
+    this.enableHealthCheck = true,
+    this.healthCheckTimeoutMs = 5000,
     this.writeConcern = WriteConcern.acknowledged,
     this.secure = false,
     this.tlsAllowInvalidCertificates = false,
@@ -61,6 +67,12 @@ class MongoPoolConfiguration {
 
   /// The threshold for connection leak detection.
   final int? leakDetectionThreshold;
+
+  /// Whether to enable connection health checking during acquire().
+  final bool enableHealthCheck;
+
+  /// The timeout for health check operations in milliseconds.
+  final int healthCheckTimeoutMs;
 
   /// The write concern to use when opening a connection.
   final WriteConcern writeConcern;
