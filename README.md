@@ -128,7 +128,7 @@ following command to
 start a MongoDB instance using Docker:
 
 ```bash
-docker run -d -p 27017:27017 --name mongo mongo"
+docker run -d -p 27017:27017 --name mongo mongo
 ```
 
 ## Problems Solved
