@@ -1,3 +1,6 @@
+# 1.5.0-dev.2
+- Fix error handling for ping command in health check
+
 # 1.5.0-dev
 
 - **New Feature**: Automatic connection health checking during acquire()
