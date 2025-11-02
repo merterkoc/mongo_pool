@@ -205,6 +205,12 @@ class MongoDbPoolBase extends Observer {
     } on Exception catch (e) {
       log('Connection health check failed: $e');
       return false;
+    } catch (e) {
+      log('Connection health check failed: $e');
+      if (e is MongoDartError) {
+        return false;
+      }
+      rethrow;
     }
   }
 
