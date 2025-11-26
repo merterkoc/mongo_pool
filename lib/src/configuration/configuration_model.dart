@@ -28,6 +28,7 @@ class MongoPoolConfiguration {
     this.maxLifetimeMilliseconds,
     this.leakDetectionThreshold,
     this.enableHealthCheck = true,
+    this.healthCheckUseIsMaster = true,
     this.healthCheckTimeoutMs = 5000,
     this.writeConcern = WriteConcern.acknowledged,
     this.secure = false,
@@ -35,25 +36,26 @@ class MongoPoolConfiguration {
     this.tlsCAFile,
     this.tlsCertificateKeyFile,
     this.tlsCertificateKeyFilePassword,
-  })  : assert(poolSize > 0, 'poolSize must be greater than 0'),
+  })
+      : assert(poolSize > 0, 'poolSize must be greater than 0'),
         assert(uriString != '', 'uriString must not be empty'),
         assert(
-          maxLifetimeMilliseconds == null || maxLifetimeMilliseconds > 0,
-          'maxLifetimeMilliseconds must be greater than 0',
+        maxLifetimeMilliseconds == null || maxLifetimeMilliseconds > 0,
+        'maxLifetimeMilliseconds must be greater than 0',
         ),
         assert(
-          leakDetectionThreshold == null || leakDetectionThreshold > 0,
-          'leakDetectionThreshold must be greater than 0',
+        leakDetectionThreshold == null || leakDetectionThreshold > 0,
+        'leakDetectionThreshold must be greater than 0',
         ),
         assert(
-          maxLifetimeMilliseconds == null ||
-              leakDetectionThreshold == null ||
-              maxLifetimeMilliseconds > leakDetectionThreshold,
-          'maxLifetimeMilliseconds must be greater than leakDetectionThreshold',
+        maxLifetimeMilliseconds == null ||
+            leakDetectionThreshold == null ||
+            maxLifetimeMilliseconds > leakDetectionThreshold,
+        'maxLifetimeMilliseconds must be greater than leakDetectionThreshold',
         ),
         assert(
-          poolSize > 0,
-          'poolSize must be greater than 0',
+        poolSize > 0,
+        'poolSize must be greater than 0',
         );
 
   /// The number of connections in the pool.
@@ -70,6 +72,9 @@ class MongoPoolConfiguration {
 
   /// Whether to enable connection health checking during acquire().
   final bool enableHealthCheck;
+
+  /// Whether to use isMaster command for health check.
+  final bool healthCheckUseIsMaster;
 
   /// The timeout for health check operations in milliseconds.
   final int healthCheckTimeoutMs;
