@@ -1,14 +1,32 @@
+# 1.5.0
+- **New Feature**: Automatic connection health checking during acquire()
+- **New Feature**: Auto-reconnection to master on connection failures
+- **Configuration**: Added `enableHealthCheck` parameter (default: true)
+- **Configuration**: Added `healthCheckTimeoutMs` parameter (default: 5000ms)
+- **Enhancement**: Connection verification using MongoDB ping command
+- **Enhancement**: Automatic unhealthy connection replacement
+- **Enhancement**: Improved reliability for replica set environments
+- **Enhancement**: Better handling of master failover scenarios
+- **Test**: Added comprehensive health check test suite
+- **Compatibility**: Backward compatible - existing code works without changes
+- When _config.healthCheckUseIsMaster is enabled, the method now calls isMaster() and verifies that
+  the connection is either a primary (ismaster == true) or a writable primary (isWritablePrimary ==
+  true).
+- Ensures that health checks not only verify connectivity (via ping) but also confirm the node is
+  writable, improving reliability for write operations.
+
 # 1.5.0-dev.2
+
 - Fix error handling for ping command in health check
 
 # 1.5.0-dev
 
 - **New Feature**: Automatic connection health checking during acquire()
-- **New Feature**: Auto-reconnection to master on connection failures  
+- **New Feature**: Auto-reconnection to master on connection failures
 - **Configuration**: Added `enableHealthCheck` parameter (default: true)
 - **Configuration**: Added `healthCheckTimeoutMs` parameter (default: 5000ms)
 - **Enhancement**: Connection verification using MongoDB ping command
-- **Enhancement**: Automatic unhealthy connection replacement 
+- **Enhancement**: Automatic unhealthy connection replacement
 - **Enhancement**: Improved reliability for replica set environments
 - **Enhancement**: Better handling of master failover scenarios
 - **Test**: Added comprehensive health check test suite
@@ -17,7 +35,7 @@
 # 1.4.4
 
 - Mongo dart package and dependencies version update
- 
+
 # 1.4.3
 
 - Readme update
@@ -25,13 +43,15 @@
 - Test code update
 - Deprecated open method replaced with initialize
 - Added new configuration parameters;
-  - writeConcern
-  - secure
-  - tlsAllowInvalidCertificates
-  - tlsCAFile
-  - tlsCertificateKeyFile
-  - tlsCertificateKeyFilePassword
-  - Please see the [link](https://www.mongodb.com/docs/drivers/php/laravel-mongodb/v4.x/fundamentals/connection/connection-options/) for more details
+    - writeConcern
+    - secure
+    - tlsAllowInvalidCertificates
+    - tlsCAFile
+    - tlsCertificateKeyFile
+    - tlsCertificateKeyFilePassword
+    - Please see
+      the [link](https://www.mongodb.com/docs/drivers/php/laravel-mongodb/v4.x/fundamentals/connection/connection-options/)
+      for more details
 
 # 1.4.2
 

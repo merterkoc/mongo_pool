@@ -201,6 +201,16 @@ class MongoDbPoolBase extends Observer {
       await connection
           .pingCommand()
           .timeout(Duration(milliseconds: _config.healthCheckTimeoutMs));
+
+      if (_config.healthCheckUseIsMaster) {
+        final isMasterResult = await connection
+            .isMaster()
+            .timeout(Duration(milliseconds: _config.healthCheckTimeoutMs));
+
+        return isMasterResult['ismaster'] == true ||
+            isMasterResult['isWritablePrimary'] == true;
+      }
+
       return true;
     } on Exception catch (e) {
       log('Connection health check failed: $e');
