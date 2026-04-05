@@ -1,3 +1,8 @@
+# 1.5.1
+
+- **Enhancement**: Minimum `poolSize` can now be set to `0`. Connections will be opened dynamically upon first demand, allowing for a scale-to-zero operation.
+- **Test**: Added tests for zero pool size configurations.
+
 # 1.5.0
 - **New Feature**: Automatic connection health checking during acquire()
 - **New Feature**: Auto-reconnection to master on connection failures

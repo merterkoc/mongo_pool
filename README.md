@@ -13,6 +13,7 @@ the [mongo_dart](https://pub.dartlang.org/packages/mongo_dart) package.
 ## Features
 
 * Dynamic expansion and maintenance of connection pools. [NEW]
+* Scale to zero: initial pool size can be configured as 0. [NEW]
 * Connection pool size configuration
 * Automatic connection pool expansion
 * Instance where you can access the connection from the pool
@@ -64,7 +65,7 @@ Future<void> main() async {
       leakDetectionThreshold: 10000,
       uriString: 'mongodb://localhost:27017/my_database',
 
-      /// [poolSize] is the minimum number of connections in the pool.
+      /// [poolSize] is the minimum number of connections in the pool. It can be set to 0.
       poolSize: 2,
       secure: false,
       tlsAllowInvalidCertificates: false,
