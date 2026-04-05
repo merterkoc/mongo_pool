@@ -12,13 +12,13 @@ class MongoDbPoolBase extends Observer {
   /// Creates a new MongoDbPool instance.
   /// Creates poolSize number of connections and adds them to the available list.
   /// uriString is the connection string to use.
-  /// Asserts that poolSize is greater than 0.
-  /// Throws an [Exception] if poolSize is less than or equal to 0.
+  /// Asserts that poolSize is greater than or equal to 0.
+  /// Throws an [Exception] if poolSize is less than 0.
   /// Asserts that uriString is not empty.
   /// Throws an [Exception] if uriString is empty or null.
   /// Throws an [Exception] if uriString is not a valid connection string.
   MongoDbPoolBase(this._config)
-      : assert(_config.poolSize > 0, 'poolSize must be greater than 0'),
+      : assert(_config.poolSize >= 0, 'poolSize must be greater than or equal to 0'),
         assert(_config.uriString.isNotEmpty, 'uriString must not be empty') {
     _lifetimeChecker = LifetimeChecker(
       allConnections,

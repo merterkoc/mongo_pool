@@ -37,7 +37,7 @@ class MongoPoolConfiguration {
     this.tlsCertificateKeyFile,
     this.tlsCertificateKeyFilePassword,
   })
-      : assert(poolSize > 0, 'poolSize must be greater than 0'),
+      : assert(poolSize >= 0, 'poolSize must be greater than or equal to 0'),
         assert(uriString != '', 'uriString must not be empty'),
         assert(
         maxLifetimeMilliseconds == null || maxLifetimeMilliseconds > 0,
@@ -54,8 +54,8 @@ class MongoPoolConfiguration {
         'maxLifetimeMilliseconds must be greater than leakDetectionThreshold',
         ),
         assert(
-        poolSize > 0,
-        'poolSize must be greater than 0',
+        poolSize >= 0,
+        'poolSize must be greater than or equal to 0',
         );
 
   /// The number of connections in the pool.
